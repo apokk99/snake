@@ -1,3 +1,2 @@
 # snake
-Snake game made with pygame
-Required modules: pygame
+Snake game made with pygame. Required modules: pygame
