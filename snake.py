@@ -7,6 +7,9 @@ class Snake:
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
 
+        self.reset_snake()
+
+    def reset_snake(self):
         self.parts = []
         self.size = 1
 
@@ -69,7 +72,7 @@ class Snake:
             for part in self.parts:
                 if self.head_rect.colliderect(part.rect):
                     print(f"You got a snake of size: {self.size}!")
-                    sys.exit()
+                    self.reset_snake()
 
     # Get coordonates of every part of the snake
     def get_snake_coords(self):
