@@ -1,7 +1,9 @@
 import sys
-from random import choice
 
-import pygame
+try:
+    import pygame
+except:
+    print('You must install pygame')
 
 from settings import Settings
 from snake import Snake
@@ -15,16 +17,15 @@ class SnakeGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Snake")
 
-        self.snake = Snake(self)
-        self.apple = Apple(self)
+        self.snake = Snake(self.settings, self.screen)
+        self.apple = Apple(self.settings, self.screen)
 
     def run_game(self):
         while True:
             pygame.time.delay(80)
             self._check_events()
 
-            self.snake.update_snake()
-            self._eat_apple()
+            self.snake.update_snake(self.apple)
             self.check_win_condition()
 
             self._update_screen()
@@ -50,22 +51,6 @@ class SnakeGame:
             self.snake.direction = 'left'
         elif event.key == pygame.K_RIGHT and (self.snake.direction != 'left' or self.snake.size == 1):
             self.snake.direction = 'right'
-
-    def _eat_apple(self):
-        if self.snake.head_rect.colliderect(self.apple.rect):
-            snake_coords = self.snake.get_snake_coords()
-            map_coords = self.settings.get_map_coord()
-            for coord in snake_coords:
-                map_coords.remove(coord)
-            self.apple.update(self.find_apple_spot())
-            self.snake.add_part(self)
-
-    def find_apple_spot(self):
-        snake_coords = self.snake.get_snake_coords()
-        map_coords = self.settings.get_map_coord()
-        for coord in snake_coords:
-            map_coords.remove(coord)
-        return choice(map_coords)
 
     def check_win_condition(self):
         if self.snake.size == self.settings.total_cubes:

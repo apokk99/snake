@@ -2,10 +2,10 @@ import sys
 import pygame
 
 class Snake:
-    def __init__(self, ai_game):
-        self.screen = ai_game.screen
-        self.settings = ai_game.settings
-        self.screen_rect = ai_game.screen.get_rect()
+    def __init__(self, settings, screen):
+        self.screen = screen
+        self.settings = settings
+        self.screen_rect = screen.get_rect()
 
         self.reset_snake()
 
@@ -57,14 +57,15 @@ class Snake:
                 # Update every other part of the body which follows the previous part
                 self.parts[i].update(self.parts[i - 1].prev_x, self.parts[i - 1].prev_y)
 
-    def update_snake(self):
+    def update_snake(self, apple):
         self.update_head()
         self.update_body_parts()
         self.check_collision()
+        self.check_eat_apple(apple)
 
-    def add_part(self, ai_game):
+    def add_part(self):
         self.size += 1
-        part = Part(ai_game)
+        part = Part(self, self.settings, self.screen)
         self.parts.append(part)
 
     def check_collision(self):
@@ -73,6 +74,15 @@ class Snake:
                 if self.head_rect.colliderect(part.rect):
                     print(f"You got a snake of size: {self.size}!")
                     self.reset_snake()
+
+    def check_eat_apple(self, apple):
+        if self.head_rect.colliderect(apple.rect):
+            snake_coords = self.get_snake_coords()
+            map_coords = self.settings.get_map_coord()
+            for coord in snake_coords:
+                map_coords.remove(coord)
+            apple.update(apple.find_apple_spot(self.get_snake_coords()))
+            self.add_part()
 
     # Get coordonates of every part of the snake
     def get_snake_coords(self):
@@ -89,14 +99,14 @@ class Snake:
             part.draw()
 
 class Part:
-    def __init__(self, ai_game):
-        self.screen = ai_game.screen
-        self.settings = ai_game.settings
-        self.screen_rect = ai_game.screen.get_rect()
+    def __init__(self, snake, settings, screen):
+        self.screen = screen
+        self.settings = settings
+        self.screen_rect = screen.get_rect()
 
         self.side = self.settings.cube_side
-        self.x = ai_game.snake.prev_head_x
-        self.y = ai_game.snake.prev_head_y
+        self.x = snake.prev_head_x
+        self.y = snake.prev_head_y
         self.rect = pygame.Rect(self.x, self.y, self.side, self.side)
 
         self.prev_x = 0
