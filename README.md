@@ -13,6 +13,6 @@ python3 snake_game.py
 ~~~
 
 ## Media
-![Screenshot](snake/media/game_capture.PNG?raw=true)
+![Screenshot](https://github.com/btudorache/snake/blob/master/readme-media/game_capture.PNG)
 
 
