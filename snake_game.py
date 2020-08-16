@@ -4,6 +4,7 @@ try:
     import pygame
 except:
     print('You must install pygame')
+    sys.exit()
 
 from settings import Settings
 from snake import Snake
